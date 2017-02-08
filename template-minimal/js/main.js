@@ -19,8 +19,8 @@ window.onload = function() {
 
     game.load.image('sky', 'assets/wuxia.jpg');
     game.load.image('ground', 'assets/black_plat.png');
-    game.load.image('star', 'assets/star.png');
-    // game.load.spritesheet('dude', 'assets/huli.png', 85, 114);
+    game.load.image('star', 'assets/cowboy2.jpeg');
+    game.load.spritesheet('firstaid', 'assets/firstaid.png', 32, 32);
     //
     game.load.spritesheet('dude', 'assets/people.png', 128, 128);
     game.load.image('diamond', 'assets/diamond.png');
@@ -34,8 +34,12 @@ window.onload = function() {
     var stars;
     var score = 0;
     var scoreText;
+    var lives = 3;
+    var livesText;
     var background;
     var diamonds;
+    var aliens;
+    var stateText;
 
     function create() {
 
@@ -45,16 +49,16 @@ window.onload = function() {
     //  background music
     background = game.add.audio('background');
     background.play();
-    
+
     //  A simple background for our game
     game.add.sprite(0, 0, 'sky');
     //  The platforms group contains the ground and the 2 ledges we can jump on
     platforms = game.add.group();
     
-
+    // var barrier = diamond
     //  Lives
     lives = game.add.group();
-    game.add.text(game.world.width - 100, 10, 'Lives : ', { font: '34px Arial', fill: '#fff' });
+    game.add.text(game.world.width - 175, 16, 'Lives : 3', { font: '32px', fill: '#000' });
 
 
     //  We will enable physics for any object that is created in this group
@@ -78,6 +82,7 @@ window.onload = function() {
 
     // The player and its settings
     player = game.add.sprite(0, game.world.height - 300, 'dude');
+    player.scale.setTo(0.6,0.6);
 
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
@@ -91,32 +96,26 @@ window.onload = function() {
     player.animations.add('left', [4, 5, 6, 7], 10, true);
     player.animations.add('right', [8, 9, 10, 11], 10, true);
 
+     // The baddies!
+    aliens = game.add.group();
+    aliens.enableBody = true;
+    aliens.physicsBodyType = Phaser.Physics.ARCADE;
+    createAliens();
+
+    //  Text
+    stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#fff' });
+    stateText.anchor.setTo(0.5, 0.5);
+    stateText.visible = false;
+
     //  Finally some stars to collect
     stars = game.add.group();
-
-    /*
-
-
-    */
-    // diamonds = diamond.create(100, 0, 'diamond');
     //  We will enable physics for any star that is created in this group
     stars.enableBody = true;
 
-    //  Here we'll create 12 of them evenly spaced apart
-    for (var i = 0; i < 12; i++)
-    {
-        //  Create a star inside of the 'stars' group
-        var star = stars.create(i * 70, 0, 'star');
-
-        //  Let gravity do its thing
-        star.body.gravity.y = 300;
-
-        //  This just gives each star a slightly random bounce value
-        star.body.bounce.y = 0.7 + Math.random() * 0.2;
-    }
+    createStar();
 
     //  The score
-    scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    scoreText = game.add.text(425, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
@@ -128,10 +127,11 @@ window.onload = function() {
     //  Collide the player and the stars with the platforms
     game.physics.arcade.collide(player, platforms);
     game.physics.arcade.collide(stars, platforms);
+    game.physics.arcade.collide(aliens, platforms);
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
-
+    game.physics.arcade.overlap(player, aliens, die, null, this);
     //  Reset the players velocity (movement)
     player.body.velocity.x = 0;
 
@@ -165,6 +165,32 @@ window.onload = function() {
 
     }
 
+    function createStar() {
+        //  Here we'll create 12 of them evenly spaced apart
+        for (var i = 0; i < 6; i++)
+        {
+            //  Create a star inside of the 'stars' group
+            var star = stars.create(i * 140, 0, 'star');
+            star.scale.setTo(0.2,0.3);
+            //  Let gravity do its thing
+            star.body.gravity.y = 300;
+
+            //  This just gives each star a slightly random bounce value
+            star.body.bounce.y = 0.2 + Math.random() * 0.2;
+        }
+
+    }
+    function createAliens() {
+    
+            //  Create a star inside of the 'stars' group   
+            alien = aliens.create(620, 0, 'firstaid');
+            //  Let gravity do its thing
+            alien.body.gravity.y = 300;
+
+            //  This just gives each alien a slightly random bounce value
+            alien.body.bounce.y = 0.2 + Math.random() * 0.2;
+    }
+
     function collectStar (player, star) {
 
     // Removes the star from the screen
@@ -173,6 +199,50 @@ window.onload = function() {
     //  Add and update the score
     score += 10;
     scoreText.text = 'Score: ' + score;
+
+    }
+
+    function die (player,aliens) {
+        
+        aliens.kill();
+
+        live = lives.getFirstAlive();
+
+        if (live)
+        {
+            live.kill();
+        }
+
+        // When the player dies
+        if (lives.countLiving() < 1)
+        {
+            player.kill();
+
+            stateText.text=" GAME OVER \n Click to restart";
+            stateText.visible = true;
+
+            //the "click to restart" handler
+            game.input.onTap.addOnce(restart,this);
+        }
+
+    }
+    function restart () {
+
+        //  A new level starts
+        
+        //resets the life count
+        lives.callAll('revive');
+        //  And brings the aliens back from the dead :)
+        aliens.removeAll();
+        createAliens();
+        createStar();
+
+        //revives the player
+        // player.revive();
+        player = game.add.sprite(0, game.world.height - 300, 'dude');
+    player.scale.setTo(0.6,0.6);
+        //hides the text
+        stateText.visible = false;
 
     }
     };
