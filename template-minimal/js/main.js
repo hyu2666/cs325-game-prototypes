@@ -17,19 +17,23 @@ window.onload = function() {
 
     function preload() {
 
-    game.load.image('sky', 'assets/wuxia.jpg');
-    game.load.image('ground', 'assets/black_plat.png');
-    game.load.image('star', 'assets/cowboy2.jpeg');
+    game.load.image('sky', 'assets/sky.png');
+    // game.load.image('ground', 'assets/black_plat.png');
+    game.load.image('ground', 'assets/platform.png');
+    game.load.image('star', 'assets/star.png');
     game.load.spritesheet('firstaid', 'assets/firstaid.png', 32, 32);
     //
     game.load.spritesheet('dude', 'assets/people.png', 128, 128);
-    game.load.image('diamond', 'assets/diamond.png');
+    game.load.image('cowboy', 'assets/cowboy2.jpeg');
+    game.load.image('baddie', 'assets/baddie.png');
     game.load.audio('background', 'assets/Happy_Bee.mp3');
+    game.load.image('bullet', 'assets/shmup-bullet.png');
     }
 
     var player;
     var platforms;
     var cursors;
+    var enemy;
 
     var stars;
     var score = 0;
@@ -40,6 +44,9 @@ window.onload = function() {
     var diamonds;
     var aliens;
     var stateText;
+    var sprite;
+    var weapon;
+    var fireButton;
 
     function create() {
 
@@ -55,7 +62,28 @@ window.onload = function() {
     //  The platforms group contains the ground and the 2 ledges we can jump on
     platforms = game.add.group();
     
-    // var barrier = diamond
+    enemy = game.add.sprite(game.world.width - 175, 475, 'baddie');
+    game.physics.arcade.enable(enemy);
+    enemy.body.bounce.y = 0.2;
+    enemy.body.gravity.y = 300;
+    enemy.body.collideWorldBounds = true;
+
+    //  Creates 30 bullets, using the 'bullet' graphic
+    weapon = game.add.weapon(30, 'bullet');
+
+    //  The bullet will be automatically killed when it leaves the world bounds
+    weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+
+    //  The speed at which the bullet is fired
+    weapon.bulletSpeed = 600;
+
+    //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
+    weapon.fireRate = 500;
+    weapon.trackSprite(enemy, 0, 0, false);
+    fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+
+
+
     //  Lives
     lives = game.add.group();
     game.add.text(game.world.width - 175, 16, 'Lives : 3', { font: '32px', fill: '#000' });
@@ -124,7 +152,13 @@ window.onload = function() {
 
     function update() {
 
+    weapon.fire();
+    // if (fireButton.isDown)
+    //     {
+    //         weapon.fire();
+    //     }
     //  Collide the player and the stars with the platforms
+    game.physics.arcade.collide(enemy, platforms);
     game.physics.arcade.collide(player, platforms);
     game.physics.arcade.collide(stars, platforms);
     game.physics.arcade.collide(aliens, platforms);
@@ -171,7 +205,7 @@ window.onload = function() {
         {
             //  Create a star inside of the 'stars' group
             var star = stars.create(i * 140, 0, 'star');
-            star.scale.setTo(0.2,0.3);
+            // star.scale.setTo(0.2,0.3);
             //  Let gravity do its thing
             star.body.gravity.y = 300;
 
@@ -235,12 +269,11 @@ window.onload = function() {
         //  And brings the aliens back from the dead :)
         aliens.removeAll();
         createAliens();
-        createStar();
+        // createStar();
 
         //revives the player
-        // player.revive();
-        player = game.add.sprite(0, game.world.height - 300, 'dude');
-    player.scale.setTo(0.6,0.6);
+        player.revive();
+
         //hides the text
         stateText.visible = false;
 
