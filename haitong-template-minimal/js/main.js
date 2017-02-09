@@ -12,7 +12,6 @@ window.onload = function() {
     // All loading functions will typically all be found inside "preload()".
 
 
-
     var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
 
     function preload() {
@@ -20,13 +19,13 @@ window.onload = function() {
     game.load.image('sky', 'assets/bk3.png');
     // game.load.image('ground', 'assets/black_plat.png');
     game.load.image('ground', 'assets/plat.png');
-    game.load.image('star', 'assets/star.png');
-    game.load.image('firstaid', 'assets/firstaid.png');
-    //
+    game.load.image('star', 'assets/gold3.png');
+    game.load.atlasJSONHash('firstaid', 'assets/running_bot.png', 'assets/running_bot.json');
     game.load.spritesheet('dude', 'assets/cowboy2.png', 94, 71);
-    game.load.image('cowboy', 'assets/cowboy2.jpeg');
-    game.load.image('baddie', 'assets/baddie.png');
+    game.load.spritesheet('baddie', 'assets/baddie.png');
     game.load.audio('background', 'assets/Happy_Bee.mp3');
+    game.load.audio('weapon_sound', 'assets/weapon_sound.wav');
+    game.load.audio('gold_sound', 'assets/gold_sound.mp3');
     game.load.image('bullet', 'assets/shmup-bullet.png');
     }
 
@@ -49,7 +48,8 @@ window.onload = function() {
     var weapon;
     var fireButton;
     var enemy_x = 0;
-
+    var weapon_sound;
+    var gold_sound;
     function create() {
 
     //  We're going to be using physics, so enable the Arcade Physics system
@@ -58,7 +58,8 @@ window.onload = function() {
     //  background music
     background = game.add.audio('background');
     background.play();
-
+    weapon_sound = game.add.audio('weapon_sound');
+    gold_sound = game.add.audio('gold_sound');
 
     //  A simple background for our game
     game.add.sprite(0, 0, 'white');
@@ -66,13 +67,11 @@ window.onload = function() {
     //  The platforms group contains the ground and the 2 ledges we can jump on
     platforms = game.add.group();
     
-    enemy = game.add.sprite(game.world.width - 500, 475, 'baddie');
+    enemy = game.add.sprite(game.world.width - 450, 475, 'baddie');
     game.physics.arcade.enable(enemy);
     enemy.body.bounce.y = 0.2;
     enemy.body.gravity.y = 300;
     enemy.body.collideWorldBounds = true;
-
-
 
 
     //  Lives
@@ -137,11 +136,12 @@ window.onload = function() {
     // weapon.bulletAngleOffset = 90; 
 
 
-     // The baddies!
+     // The aliens!
     aliens = game.add.group();
     aliens.enableBody = true;
     aliens.physicsBodyType = Phaser.Physics.ARCADE;
     createAliens();
+
 
     //  Text
     stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#000' });
@@ -171,6 +171,7 @@ window.onload = function() {
     if (fireButton.isDown)
         {
             weapon.fire();
+            weapon_sound.play();
         }
     //  Collide the player and the stars with the platforms
     game.physics.arcade.collide(enemy, platforms);
@@ -182,7 +183,6 @@ window.onload = function() {
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
     game.physics.arcade.overlap(player, aliens, die, null, this);
     game.physics.arcade.overlap(weapon, aliens, beat, null, this);
-    game.physics.arcade.overlap(weapon, enemy, beat1, null, this);
     //  Reset the players velocity (movement)
     player.body.velocity.x = 0;
 
@@ -216,7 +216,7 @@ window.onload = function() {
 
     if(score >= 60)
     {
-        stateText.text=" You Won! \n";
+        stateText.text=" You Win! \n";
         stateText.visible = true;
     }
     }
@@ -227,7 +227,7 @@ window.onload = function() {
         {
             //  Create a star inside of the 'stars' group
             var star = stars.create(i * 140, 0, 'star');
-            // star.scale.setTo(0.2,0.3);
+            star.scale.setTo(0.8,0.8);
             //  Let gravity do its thing
             star.body.gravity.y = 300;
 
@@ -237,21 +237,21 @@ window.onload = function() {
 
     }
     function createAliens() {
-    
             //  Create a star inside of the 'stars' group   
             alien = aliens.create(620, 0, 'firstaid');
             //  Let gravity do its thing
             alien.body.gravity.y = 300;
-
             //  This just gives each alien a slightly random bounce value
             alien.body.bounce.y = 0.2 + Math.random() * 0.2;
+            alien.animations.add('run');
+            alien.animations.play('run', 10, true);
     }
 
     function collectStar (player, star) {
 
     // Removes the star from the screen
     star.kill();
-
+    gold_sound.play();
     //  Add and update the score
     score += 10;
     scoreText.text = 'Score: ' + score;
@@ -263,22 +263,10 @@ window.onload = function() {
         weapon.kill();
 
     }
-    function beat1 (weapon,enemy) {
-        
-        enemy.kill();
-        weapon.kill();
 
-    }
     function die (player,aliens) {
         
         aliens.kill();
-
-        live = lives.getFirstAlive();
-
-        if (live)
-        {
-            live.kill();
-        }
 
         // When the player dies
         if (lives.countLiving() < 1)
@@ -302,7 +290,6 @@ window.onload = function() {
         //  And brings the aliens back from the dead :)
         aliens.removeAll();
         createAliens();
-        // createStar();
 
         //revives the player
         player.revive();
