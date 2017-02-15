@@ -21,7 +21,7 @@ window.onload = function() {
     game.load.image('ground', 'assets/plat.png');
     game.load.image('star', 'assets/gold3.png');
     game.load.atlasJSONHash('firstaid', 'assets/running_bot.png', 'assets/running_bot.json');
-    game.load.spritesheet('dude', 'assets/cowboy2.png', 94, 71);
+    game.load.spritesheet('dude', 'assets/aaa.png', 32, 23);
     game.load.spritesheet('baddie', 'assets/baddie.png');
     game.load.audio('background', 'assets/Happy_Bee.mp3');
     game.load.audio('weapon_sound', 'assets/weapon_sound.wav');
@@ -70,7 +70,7 @@ window.onload = function() {
     enemy = game.add.sprite(game.world.width - 450, 475, 'baddie');
     game.physics.arcade.enable(enemy);
     enemy.body.bounce.y = 0.2;
-    enemy.body.gravity.y = 300;
+    enemy.body.gravity.y = 600;
     enemy.body.collideWorldBounds = true;
 
 
@@ -100,14 +100,14 @@ window.onload = function() {
 
     // The player and its settings
     player = game.add.sprite(0, game.world.height - 300, 'dude');
-    player.scale.setTo(0.6,0.6);
+    player.scale.setTo(2,2);
 
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
 
     //  Player physics properties. Give the little guy a slight bounce.
     player.body.bounce.y = 0.2;
-    player.body.gravity.y = 300;
+    player.body.gravity.y = 600;
     player.body.collideWorldBounds = true;
 
     // //  Our two animations, walking left and right.
@@ -211,7 +211,7 @@ window.onload = function() {
     //  Allow the player to jump if they are touching the ground.
     if (cursors.up.isDown && player.body.touching.down)
     {
-        player.body.velocity.y = -350;
+        player.body.velocity.y = -500;
     }
 
     if(score >= 60)
