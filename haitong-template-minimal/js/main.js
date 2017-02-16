@@ -64,8 +64,7 @@ window.onload = function() {
     //  A simple background for our game
     game.add.sprite(0, 0, 'white');
     game.add.sprite(-50, -100, 'sky');
-    //  The platforms group contains the ground and the 2 ledges we can jump on
-    platforms = game.add.group();
+
     
     enemy = game.add.sprite(game.world.width - 450, 475, 'baddie');
     game.physics.arcade.enable(enemy);
@@ -78,7 +77,8 @@ window.onload = function() {
     lives = game.add.group();
     game.add.text(game.world.width - 175, 16, 'Lives : 3', { font: '32px', fill: '#000' });
 
-
+    //  The platforms group contains the ground and the 2 ledges we can jump on
+    platforms = game.add.group();
     //  We will enable physics for any object that is created in this group
     platforms.enableBody = true;
 
@@ -216,7 +216,7 @@ window.onload = function() {
 
     if(score >= 60)
     {
-        stateText.text=" You Win! \n";
+        stateText.text=" You Won! \n";
         stateText.visible = true;
     }
     }
