@@ -2,8 +2,15 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>The Road to Revenge</title>
+    <title>Revenge Road</title>
     <script src="js/phaser.js"></script>
+    <!-- Boot.js must come first since it creates the BasicGame object
+	that stores all the states. -->
+	<script src="js/Boot.js"></script>
+	<script src="js/Preloader.js"></script>
+	<script src="js/MainMenu.js"></script>
+	<script src="js/Game.js"></script>
+	<!-- main.js must come last since it references the other ones. -->
     <script src="js/main.js"></script>
 
 <style>
@@ -22,12 +29,12 @@ body
 <body>
 <div id="game"></div>
 <div id="readme">
-<h2>The Road to Revenge</h2>
+<h2>Revenge Road</h2>
 <ul>
 
 <li><strong>High Concept:</strong>
 <!-- A one-sentence summary of your game. -->
-A final fight between the price and the Moster.
+A final fight between the prince and the Monster.
 
 </li>
 
@@ -64,7 +71,7 @@ There are 4 inputs from user:
 	up:    jump
 	left:  go left
 	right: go right
-	space: shooting
+	J: shooting
 
 
 </li>
@@ -128,7 +135,7 @@ Take care the path that the chess can move.
 
 <li><strong>Prototype Closest Other Game:</strong>
 <!-- Which other game most closely resembles your game? If you are borrowing code from a Phaser Example, you must say so here. If you borrow code from elsewhere, you must say so here. -->
-My game is close to the game called DNF.
+I tried to add Professor's menu template, but it does not work.
 
 </li>
 

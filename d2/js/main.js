@@ -34,13 +34,15 @@ window.onload = function() {
         game.load.image('flower', 'assets/game/flower.png');
         game.load.image('chess1', 'assets/game/chess1.png');
         game.load.image('chess2', 'assets/game/chess2.png');
-        game.load.image('ground', 'assets/plat.png');
         game.load.image('crown', 'assets/game/crown.png');
         game.load.spritesheet('boss', 'assets/game/boss1.png');
         game.load.spritesheet('dude', 'assets/game/player.png', 85, 67);
         game.load.image('bullet', 'assets/game/skill.png',78, 51);
         game.load.audio('bgm', 'assets/game/characterSelectStage.ogg');
         game.load.audio('win_bgm', 'assets/game/win.ogg');
+        game.load.audio('attack_music', 'assets/game/attack_music.wav');
+        game.load.audio('die', 'assets/game/die.mp3');
+        game.load.audio('die2', 'assets/game/die2.mp3');
     }
     var land;
     var bouncy;
@@ -60,7 +62,11 @@ window.onload = function() {
     var win_bgm;
     var stateText;
     var stateText2;
+    var stateText3;
     var crown;
+    var die;
+    var die2;
+    var attack_music;
 
     function create() {
 
@@ -73,6 +79,9 @@ window.onload = function() {
         bgm.play();
 
         win_bgm = game.add.audio('win_bgm');
+        attack_music = game.add.audio('attack_music');
+        die = game.add.audio('die');
+        die2 = game.add.audio('die2');
         //  Our tiled scrolling background
         land = game.add.tileSprite(0, 0, 3700, 600, 'earth');
         land = game.add.tileSprite(0, 225, 3700, 600, 'grass');
@@ -123,6 +132,15 @@ window.onload = function() {
         ledge.scale.setTo(0.8, 0.8);
         ledge.body.immovable = true;
 
+        ledge = platforms.create(1100, 300, 'root');
+        ledge.scale.setTo(0.5,0.5);
+        ledge.body.immovable = true;
+
+        //Wall around the chess
+        ledge = platforms.create(1100, 375, 'root');
+        ledge.scale.setTo(0.5,0.5);
+        ledge.body.immovable = true;
+
         ledge = platforms.create(1000, 300, 'root');
         ledge.scale.setTo(0.5,0.5);
         ledge.body.immovable = true;
@@ -164,13 +182,13 @@ window.onload = function() {
         chess2.scale.setTo(0.5, 0.5);
         chess2.body.immovable = true;
 
-        chess1 = platforms.create(1350, 450, 'chess1');
+        chess1 = platforms.create(1250, 350, 'chess1');
         chess1.scale.setTo(0.5, 0.5);
         chess1.body.collideWorldBounds = true;
 
 
         // The player and its settings
-        player = game.add.sprite(0, 350, 'dude');
+        player = game.add.sprite(0, 250, 'dude');
         player.scale.setTo(1.5,1.5);
         game.physics.arcade.enable(player);
     
@@ -193,9 +211,11 @@ window.onload = function() {
         //  Text
         stateText = game.add.text(1100,300,'Chess Time!', { font: '84px Arial', fill: '#000' });
         stateText.scale.setTo(0.5, 0.5);
-        // stateText.visible = false;
 
-        stateText2 = game.add.text(3450, 300,'You Won!', { font: '84px Arial', fill: '#000' });
+        stateText2 = game.add.text(3200, 300,'Yeah! You Won!', { font: '84px Arial', fill: '#000' });
+        stateText2.scale.setTo(0.5, 0.5);
+
+        stateText2 = game.add.text(2500, 225,'Press J to attack!', { font: '84px Arial', fill: '#000' });
         stateText2.scale.setTo(0.5, 0.5);
         
 
@@ -215,9 +235,8 @@ window.onload = function() {
 
         //  Our controls.
         cursors = game.input.keyboard.createCursorKeys();
-        fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+        fireButton = this.input.keyboard.addKey(Phaser.Keyboard.J);
 
-        // game.camera.deadzone = new Phaser.Rectangle(300, 250, 250, 100);
         game.camera.focusOnXY(0, 0);
 
     }
@@ -226,17 +245,15 @@ window.onload = function() {
         player.body.velocity.x = 0;
         player.body.velocity.y = 0;
 
-        // game.physics.arcade.collide(enemy, platforms);
         game.physics.arcade.collide(player, platforms);
 
         game.physics.arcade.overlap(player, enemy, die, null, this);
-        game.physics.arcade.overlap(player, latch1, outcome, null, this);
         game.physics.arcade.overlap(weapon.bullets, enemy, kill, null, this);
         game.physics.arcade.overlap(chess1, chess2, win_chess, null, this);
-        game.physics.arcade.overlap(player, crown, win_game, null, this);
-        // weapon.fire();
+
         if (fireButton.isDown)
         {
+            attack_music.play();
             weapon.fire();
             player.animations.play('attack');
         }
@@ -256,7 +273,7 @@ window.onload = function() {
         }
         else if (cursors.down.isDown || game.input.keyboard.addKey(Phaser.Keyboard.S).isDown)
         {
-            //  Move to the right
+            //  Move down
             player.body.velocity.y = 300;
             player.animations.play('down');
         }
@@ -279,13 +296,13 @@ window.onload = function() {
 
     function die (player,enemy) {
         player.kill();
+        die2.play();
     }
-    function outcome (player,latch1) {
-        enemy.visible = true;
-    }
+
     function kill (bullet,enemy) {
 
         enemy.kill();
+        die.play();
         latch2.kill();
         bullet.kill();
         bgm.stop();
@@ -296,9 +313,6 @@ window.onload = function() {
         stateText.text=" You Won the Chess! \nNow go to next room";
         chess2.kill();
         latch1.kill();
-    }
-    function win_game (player,crown) {
-        stateText2.visible = true;
     }
 
 };
