@@ -182,7 +182,7 @@ window.onload = function() {
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
     game.physics.arcade.overlap(player, aliens, die, null, this);
-    game.physics.arcade.overlap(weapon, aliens, beat, null, this);
+    game.physics.arcade.overlap(weapon.bullets, aliens, beat, null, this);
     //  Reset the players velocity (movement)
     player.body.velocity.x = 0;
 
@@ -257,7 +257,7 @@ window.onload = function() {
     scoreText.text = 'Score: ' + score;
 
     }
-    function beat (weapon,aliens) {
+    function beat (bullet,aliens) {
         
         aliens.kill();
         weapon.kill();

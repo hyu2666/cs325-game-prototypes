@@ -124,6 +124,12 @@ window.onload = function() {
         ground = platforms.create(1920, 145, 'barrier');
         ground.body.immovable = true;
 
+        ground = platforms.create(2560, 145, 'barrier');
+        ground.body.immovable = true;
+
+        ground = platforms.create(3200, 145, 'barrier');
+        ground.body.immovable = true;
+
         var ledge = platforms.create(600, 0, 'tree');
         ledge.scale.setTo(1.3,1.3);
         ledge.body.immovable = true;
