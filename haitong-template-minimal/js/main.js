@@ -260,7 +260,7 @@ window.onload = function() {
     function beat (bullet,aliens) {
         
         aliens.kill();
-        weapon.kill();
+        bullet.kill();
 
     }
 
