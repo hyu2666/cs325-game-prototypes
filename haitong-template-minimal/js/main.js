@@ -132,6 +132,7 @@ window.onload = function() {
     weapon.fireRate = 500;
     weapon.trackSprite(player, 50, 17, true);
     fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+    weapon.bulletAngleOffset = 90;
     // player.anchor.set(0.5);
     // weapon.bulletAngleOffset = 90; 
 
