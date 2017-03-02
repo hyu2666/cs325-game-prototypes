@@ -65,7 +65,6 @@ window.onload = function() {
     game.add.sprite(0, 0, 'white');
     game.add.sprite(-50, -100, 'sky');
 
-    
     enemy = game.add.sprite(game.world.width - 450, 475, 'baddie');
     game.physics.arcade.enable(enemy);
     enemy.body.bounce.y = 0.2;
