@@ -11,6 +11,31 @@ GameStates.makePreloader = function( game ) {
     
         preload: function () {
     
+            // Load an image and call it 'logo'.
+            game.load.image('logo', 'assets/phaser.png' );
+            game.load.image('earth', 'assets/game/back.bmp');
+            game.load.image('grass', 'assets/game/grass.bmp');
+            game.load.image('grass2', 'assets/game/grass2.png');
+            game.load.image('barrier', 'assets/game/barrier.png');
+            game.load.image('tree', 'assets/game/tree.png');
+            game.load.image('tree2', 'assets/game/tree2.png');
+            game.load.image('root', 'assets/game/root.png');
+            game.load.image('root2', 'assets/game/root2.png');
+            game.load.image('road', 'assets/game/road.png');
+            game.load.image('wall', 'assets/game/stone.png');
+            game.load.image('wall2', 'assets/game/stone2.png');
+            game.load.image('door', 'assets/game/door.png');
+            game.load.image('latch', 'assets/game/door1.png');
+            game.load.image('flower', 'assets/game/flower.png');
+            game.load.image('chess1', 'assets/game/chess1.png');
+            game.load.image('chess2', 'assets/game/chess2.png');
+            game.load.image('ground', 'assets/plat.png');
+            game.load.image('crown', 'assets/game/crown.png');
+            game.load.spritesheet('boss', 'assets/game/boss1.png');
+            game.load.spritesheet('dude', 'assets/game/player.png', 85, 67);
+            game.load.image('bullet', 'assets/game/skill.png',78, 51);
+            game.load.audio('bgm', 'assets/game/characterSelectStage.ogg');
+            game.load.audio('win_bgm', 'assets/game/win.ogg');
             //	These are the assets we loaded in Boot.js
             //	A nice sparkly background and a loading progress bar
             background = game.add.sprite(0, 0, 'preloaderBackground');
