@@ -193,7 +193,7 @@ GameStates.makeGame = function( game, shared ) {
             }
             else
             {
-                monsterbloodbar.scale.setTo((monsterblood - 10)/1000 * 1, 1);
+                monsterbloodbar.scale.setTo((monsterblood - 10)/5000 * 1, 1);
                 monsterblood -= 10;
             }
 
