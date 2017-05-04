@@ -218,9 +218,9 @@ function make_main_game_state( game )
         mask.beginFill(0xffffff);
 
         //  Here we'll draw a circle
-        mask.drawCircle(100, 100, 100);
+        // mask.drawCircle(100, 100, 100);
         //  And apply it to the Sprite
-        player.mask = mask;
+        game.mask = mask;
         game.input.addMoveCallback(move, this);
 
         // The enemy's bullets
