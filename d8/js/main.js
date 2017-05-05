@@ -335,8 +335,8 @@ function make_main_game_state( game )
         game.physics.arcade.overlap(player, fireball3, kill, null, this);
         game.physics.arcade.overlap(player, sw, sw_change, null, this);
         game.physics.arcade.overlap(player, sw2, win, null, this);
-        // mask.x = player.x + 8;
-        // mask.y = player.y + 10;
+        mask.x = player.x + 8;
+        mask.y = player.y + 10;
         
         updateS1(fireball1);
         if(fireball_status == 1)
