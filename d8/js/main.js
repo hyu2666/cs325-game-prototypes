@@ -172,7 +172,7 @@ function make_main_game_state( game )
         game.load.image('fireball', 'assets/fireball.png');
         game.load.image('barrier', 'assets/barrier.png'); 
         game.load.image('pointer', 'assets/pointer.png'); 
-        game.load.tilemap('tilemap', 'assets/background.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.tilemap('tilemap', 'assets/Background.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.image('button', 'assets/button.png');
     }
 
